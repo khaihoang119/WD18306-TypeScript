@@ -95,9 +95,7 @@ function displayPokemon() {
                     pokemonListElement = document.getElementById('pokemonList');
                     if (pokemonListElement) {
                         pokemonList.forEach(function (pokemon) {
-                            var listItem = document.createElement('li');
-                            listItem.innerHTML = "\n                <p>ID: ".concat(pokemon.id, "</p>\n                <p>Name: ").concat(pokemon.name, "</p>\n                <p>Type: ").concat(pokemon.type, "</p>\n                <img src=\"").concat(pokemon.image, "\" alt=\"").concat(pokemon.name, "\">\n            ");
-                            pokemonListElement.appendChild(listItem);
+                            pokemonListElement.innerHTML += "\n                <div class=\"col\">\n                <div class=\"p-3 card shadow-sm\"><img src=\"".concat(pokemon.image, "\"  alt=\"\"></div>\n            </div>\n            ");
                         });
                     }
                     else {
