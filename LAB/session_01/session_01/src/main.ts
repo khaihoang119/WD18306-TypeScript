@@ -1,4 +1,4 @@
-var isCheck : boolean = true;
+// var isCheck : boolean = true;
 // isCheck = false;
 
 console.log(isCheck);

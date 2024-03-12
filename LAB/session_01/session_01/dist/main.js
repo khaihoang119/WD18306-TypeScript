@@ -1,5 +1,5 @@
 "use strict";
-var isCheck = true;
+// var isCheck : boolean = true;
 // isCheck = false;
 console.log(isCheck);
 var number1 = 5;
