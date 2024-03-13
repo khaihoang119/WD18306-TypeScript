@@ -44,14 +44,13 @@ async function displayPokemon(): Promise<void> {
 
     if (pokemonListElement) {
         pokemonList.forEach(pokemon => {
-            const listItem = document.createElement('li');
-            listItem.innerHTML = `
-                <p>ID: ${pokemon.id}</p>
-                <p>Name: ${pokemon.name}</p>
-                <p>Type: ${pokemon.type}</p>
-                <img src="${pokemon.image}" alt="${pokemon.name}">
+           
+            pokemonListElement.innerHTML += `
+                <div class="col">
+                <div class="p-3 card shadow-sm"><img src="${pokemon.image}"  alt=""></div>
+            </div>
             `;
-            pokemonListElement.appendChild(listItem);
+            
         });
     } else {
         console.error('Element with id "pokemonList" not found.');
