@@ -5,53 +5,70 @@ function loadPage(): void {
 
 const donutImages = document.querySelectorAll('.donut-image') as NodeListOf<HTMLElement>;
 
-donutImages.forEach((donutImage: HTMLElement) => {
-    donutImage.addEventListener('click', () => {
-        // Đổi màu background của hình ảnh
-        donutImage.style.backgroundColor = getRandomColor();
-    });
-});
 
 
-// Hàm để sinh màu ngẫu nhiên
-const getRandomColor = (): string => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-};
-const fs = require('fs');
+// Mảng để lưu trữ id của các hình ảnh đã được click
+let clickedImageIds: number[] = [];
 
+// Function để xử lý khi click vào hình ảnh
+function handleImageClick(event: Event, id: number): void {
+    const clickedImage = event.currentTarget as HTMLElement;
 
-
-interface Donut{
-    id: number;
-    url:string;
-}
-
-function shuffleImages(filename: string): void{
-    try{
-        //Đọc dữ liệu từ json
-        const data:  Donut[] = JSON.parse(fs.readFileSync(filename, 'utf-8'));
-    
-    // Xáo trộn danh sách hình ảnh
-    const shuffledData = shuffleArray(data);
-
-    // Ghi dữ liệu đã xáo trộn vào tệp JSON
-    fs.writeFileSync(filename, JSON.stringify(shuffledData, null, 2));
-         // Tạo các phần tử img và thêm chúng vào imageGallery
-         data.forEach(image => {
-            const img = document.createElement('img');
-            img.src = image.url;
-            img.alt = `Image ${image.id}`;
-            imageGallery.appendChild(img);
+    // Kiểm tra xem hình ảnh đã được click trước đó chưa
+    if (clickedImageIds.includes(id)) {
+        // Làm cho cả 2 hình ảnh có cùng id trở thành màu xám
+        const imagesWithSameId = document.querySelectorAll(`[data-id="${id}"]`);
+        imagesWithSameId.forEach(image => {
+            (image as HTMLElement).style.filter = 'grayscale(100%)';
         });
-    console.log('Đã xáo trộn danh sách hình ảnh thành công!');
-    } catch (error) {
-    console.error('Đã xảy ra lỗi khi xáo trộn danh sách hình ảnh:', error);
+    } else {
+        // Nếu chưa được click trước đó, thêm id vào mảng
+        clickedImageIds.push(id);
+    }
 }
+
+interface Image {
+    id: number;
+    url: string;
+}
+
+function displayImages(): void {
+    
+    fetch('../db.json')
+        .then(response => response.json())
+        .then(data => {
+            const imageGallery = document.getElementById('imageGallery');
+            shuffleArray(data)
+
+            if (imageGallery) {
+                let html = '';
+                data.forEach((item: { id: number, image: string }) => {
+                html += `
+                <div class="col">
+                    <div class="p-3 card shadow-sm">
+                        <img src="./assets/images/${item.image}" alt="Image ${item.id}" data-id="${item.id}" onclick="handleImageClick(event, ${item.id})"    class="image" >
+                    </div>
+                </div>
+                `;
+                });
+                imageGallery.innerHTML = html;
+            } else {
+                console.error('Không tìm thấy phần tử với id là "imageGallery" trong DOM.');
+            }
+        })
+        
+        .catch(error => {
+            console.error('Đã xảy ra lỗi khi tải danh sách hình ảnh:', error);
+        });
+}
+
+displayImages();
+
+
+
+// Sử dụng hàm để hiển thị danh sách hình ảnh trong db.json
+const filename = 'db.json';
+
 
 // Hàm xáo trộn mảng
 function shuffleArray<T>(array: T[]): T[] {
@@ -61,25 +78,10 @@ function shuffleArray<T>(array: T[]): T[] {
     }
     return array;
 }
-}
 
-// Sử dụng hàm để xáo trộn danh sách hình ảnh trong db.json
-const filename = 'db.json';
-shuffleImages(filename);
 
-// interface Pokemon {
-//     id: number;
-//     name: string;
-//     image: string;
-//     type: string;
-// }
 
-// function shuffle(array: any[]): void {
-//     for (let i = array.length - 1; i > 0; i--) {
-//         const j = Math.floor(Math.random() * (i + 1));
-//         [array[i], array[j]] = [array[j], array[i]];
-//     }
-// }
+
 
 // async function getPokemonList(): Promise<Pokemon[]> {
 //     const numberOfPokemon = Math.floor(Math.random() * (20 - 10 + 1)) + 10;

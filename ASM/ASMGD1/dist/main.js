@@ -3,66 +3,62 @@ function loadPage() {
     alert("Image is loaded");
 }
 const donutImages = document.querySelectorAll('.donut-image');
-donutImages.forEach((donutImage) => {
-    donutImage.addEventListener('click', () => {
-        // Đổi màu background của hình ảnh
-        donutImage.style.backgroundColor = getRandomColor();
-    });
-});
-// Hàm để sinh màu ngẫu nhiên
-const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-};
-const fs = require('fs');
-function shuffleImages(filename) {
-    try {
-        //Đọc dữ liệu từ json
-        const data = JSON.parse(fs.readFileSync(filename, 'utf-8'));
-        // Xáo trộn danh sách hình ảnh
-        const shuffledData = shuffleArray(data);
-        // Ghi dữ liệu đã xáo trộn vào tệp JSON
-        fs.writeFileSync(filename, JSON.stringify(shuffledData, null, 2));
-        // Tạo các phần tử img và thêm chúng vào imageGallery
-        data.forEach(image => {
-            const img = document.createElement('img');
-            img.src = image.url;
-            img.alt = `Image ${image.id}`;
-            imageGallery.appendChild(img);
+// Mảng để lưu trữ id của các hình ảnh đã được click
+let clickedImageIds = [];
+// Function để xử lý khi click vào hình ảnh
+function handleImageClick(event, id) {
+    const clickedImage = event.currentTarget;
+    // Kiểm tra xem hình ảnh đã được click trước đó chưa
+    if (clickedImageIds.includes(id)) {
+        // Làm cho cả 2 hình ảnh có cùng id trở thành màu xám
+        const imagesWithSameId = document.querySelectorAll(`[data-id="${id}"]`);
+        imagesWithSameId.forEach(image => {
+            image.style.filter = 'grayscale(100%)';
         });
-        console.log('Đã xáo trộn danh sách hình ảnh thành công!');
     }
-    catch (error) {
-        console.error('Đã xảy ra lỗi khi xáo trộn danh sách hình ảnh:', error);
-    }
-    // Hàm xáo trộn mảng
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
+    else {
+        // Nếu chưa được click trước đó, thêm id vào mảng
+        clickedImageIds.push(id);
     }
 }
-// Sử dụng hàm để xáo trộn danh sách hình ảnh trong db.json
+function displayImages() {
+    fetch('../db.json')
+        .then(response => response.json())
+        .then(data => {
+        const imageGallery = document.getElementById('imageGallery');
+        shuffleArray(data);
+        if (imageGallery) {
+            let html = '';
+            data.forEach((item) => {
+                html += `
+                <div class="col">
+                    <div class="p-3 card shadow-sm">
+                        <img src="./assets/images/${item.image}" alt="Image ${item.id}" data-id="${item.id}" onclick="handleImageClick(event, ${item.id})"    class="image" >
+                    </div>
+                </div>
+                `;
+            });
+            imageGallery.innerHTML = html;
+        }
+        else {
+            console.error('Không tìm thấy phần tử với id là "imageGallery" trong DOM.');
+        }
+    })
+        .catch(error => {
+        console.error('Đã xảy ra lỗi khi tải danh sách hình ảnh:', error);
+    });
+}
+displayImages();
+// Sử dụng hàm để hiển thị danh sách hình ảnh trong db.json
 const filename = 'db.json';
-shuffleImages(filename);
-// interface Pokemon {
-//     id: number;
-//     name: string;
-//     image: string;
-//     type: string;
-// }
-// function shuffle(array: any[]): void {
-//     for (let i = array.length - 1; i > 0; i--) {
-//         const j = Math.floor(Math.random() * (i + 1));
-//         [array[i], array[j]] = [array[j], array[i]];
-//     }
-// }
+// Hàm xáo trộn mảng
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 // async function getPokemonList(): Promise<Pokemon[]> {
 //     const numberOfPokemon = Math.floor(Math.random() * (20 - 10 + 1)) + 10;
 //     const response = await fetch(`../${db}?limit=${numberOfPokemon}`);
