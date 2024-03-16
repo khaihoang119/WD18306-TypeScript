@@ -1,0 +1,15 @@
+{
+  "name": "asmgd1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --watch",
+    "tslint:check": "tslint -c tslint.json 'src/**/*.{ts,tsx}'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tslint": "^6.1.3"
+  }
+}

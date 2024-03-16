@@ -1,59 +1,100 @@
 "use strict";
-// Bắt lỗi form validate
-function validateForm() {
-    var playerNameInput = document.getElementById("playerName");
-    var playerName = playerNameInput.value.trim();
-    var agreeCheckbox = document.getElementById("agreeCheckbox").checked;
-    if (playerName === "") {
-        var nameErrorElement = document.getElementById("nameError");
-        nameErrorElement.style.display = "block";
-        return false;
-    }
-    else {
-        var nameErrorElement = document.getElementById("nameError");
-        if (nameErrorElement) {
-            nameErrorElement.style.display = "none";
-            // Lưu tên người chơi vào localStorage
-            localStorage.setItem("playerName", playerName);
-        }
-    }
-    var checkboxErrorElement = document.getElementById("checkboxError");
-    if (checkboxErrorElement) {
-        if (!agreeCheckbox) {
-            checkboxErrorElement.style.display = "block";
-            return false;
-        }
-        else {
-            checkboxErrorElement.style.display = "none";
-        }
-    }
-    return true;
-}
-// Lấy tên người chơi từ localStorage và hiển thị trên trang
-var playerName = localStorage.getItem("playerName");
-if (playerName) {
-    document.getElementById("playerName").textContent = playerName;
-}
-else {
-    // Nếu không có tên người chơi trong localStorage, chuyển hướng người dùng trở lại trang chính
-    window.location.href = "login.component.html";
-}
 function loadPage() {
     alert("Image is loaded");
 }
-var donutImages = document.querySelectorAll('.donut-image');
-donutImages.forEach(function (donutImage) {
-    donutImage.addEventListener('click', function () {
+const donutImages = document.querySelectorAll('.donut-image');
+donutImages.forEach((donutImage) => {
+    donutImage.addEventListener('click', () => {
         // Đổi màu background của hình ảnh
         donutImage.style.backgroundColor = getRandomColor();
     });
 });
 // Hàm để sinh màu ngẫu nhiên
-var getRandomColor = function () {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
+const getRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
 };
+const fs = require('fs');
+function shuffleImages(filename) {
+    try {
+        //Đọc dữ liệu từ json
+        const data = JSON.parse(fs.readFileSync(filename, 'utf-8'));
+        // Xáo trộn danh sách hình ảnh
+        const shuffledData = shuffleArray(data);
+        // Ghi dữ liệu đã xáo trộn vào tệp JSON
+        fs.writeFileSync(filename, JSON.stringify(shuffledData, null, 2));
+        // Tạo các phần tử img và thêm chúng vào imageGallery
+        data.forEach(image => {
+            const img = document.createElement('img');
+            img.src = image.url;
+            img.alt = `Image ${image.id}`;
+            imageGallery.appendChild(img);
+        });
+        console.log('Đã xáo trộn danh sách hình ảnh thành công!');
+    }
+    catch (error) {
+        console.error('Đã xảy ra lỗi khi xáo trộn danh sách hình ảnh:', error);
+    }
+    // Hàm xáo trộn mảng
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+}
+// Sử dụng hàm để xáo trộn danh sách hình ảnh trong db.json
+const filename = 'db.json';
+shuffleImages(filename);
+// interface Pokemon {
+//     id: number;
+//     name: string;
+//     image: string;
+//     type: string;
+// }
+// function shuffle(array: any[]): void {
+//     for (let i = array.length - 1; i > 0; i--) {
+//         const j = Math.floor(Math.random() * (i + 1));
+//         [array[i], array[j]] = [array[j], array[i]];
+//     }
+// }
+// async function getPokemonList(): Promise<Pokemon[]> {
+//     const numberOfPokemon = Math.floor(Math.random() * (20 - 10 + 1)) + 10;
+//     const response = await fetch(`../${db}?limit=${numberOfPokemon}`);
+//     const data = await response.json();
+//     const pokemonList: Pokemon[] = [];
+//     for (const pokemonData of data) {
+//         const pokemonResponse = await fetch(pokemonData.url);
+//         const pokemonDetail = await pokemonResponse.json();
+//         const pokemon: Pokemon = {
+//             id: pokemonDetail.id,
+//             name: pokemonDetail.name,
+//             image: pokemonDetail.sprites.front_default,
+//             type: pokemonDetail.types[0].type.name
+//         };
+//         pokemonList.push(pokemon);
+//     }
+//     return pokemonList;
+// }
+// async function displayPokemon(): Promise<void> {
+//     const pokemonList = await getPokemonList();
+//     shuffle(pokemonList);
+//     const pokemonListElement = document.getElementById('pokemonList');
+//     if (pokemonListElement) {
+//         pokemonList.forEach(pokemon => {
+//             pokemonListElement.innerHTML += `
+//                 <div class="col">
+//                 <div class="p-3 card shadow-sm"><img src="${pokemon.image}"  alt=""></div>
+//             </div>
+//             `;
+//         });
+//     } else {
+//         console.error('Element with id "pokemonList" not found.');
+//     }
+// }
+// displayPokemon();
