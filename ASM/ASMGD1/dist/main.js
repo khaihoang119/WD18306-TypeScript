@@ -1,26 +1,25 @@
 "use strict";
-function loadPage() {
-    alert("Image is loaded");
-}
-const donutImages = document.querySelectorAll('.donut-image');
-// Mảng để lưu trữ id của các hình ảnh đã được click
-let clickedImageIds = [];
+// Biến để lưu trữ id của hình ảnh đã được click trước đó
+let previousClickedImageId = null;
 // Function để xử lý khi click vào hình ảnh
 function handleImageClick(event, id) {
     const clickedImage = event.currentTarget;
-    // Kiểm tra xem hình ảnh đã được click trước đó chưa
-    if (clickedImageIds.includes(id)) {
+    // Nếu hình ảnh đã được click trước đó và có cùng id với hình ảnh hiện tại
+    if (previousClickedImageId !== null && id === previousClickedImageId) {
         // Làm cho cả 2 hình ảnh có cùng id trở thành màu xám
         const imagesWithSameId = document.querySelectorAll(`[data-id="${id}"]`);
         imagesWithSameId.forEach(image => {
-            image.style.filter = 'grayscale(100%)';
+            image.style.background = 'gray';
         });
     }
     else {
-        // Nếu chưa được click trước đó, thêm id vào mảng
-        clickedImageIds.push(id);
+        // Nếu không, làm cho hình ảnh hiện tại trở thành màu đỏ
+        clickedImage.style.background = 'red';
+        // Lưu id của hình ảnh hiện tại vào biến previousClickedImageId
+        previousClickedImageId = id;
     }
 }
+// Function để hiển thị hình ảnh
 function displayImages() {
     fetch('../db.json')
         .then(response => response.json())
@@ -31,12 +30,12 @@ function displayImages() {
             let html = '';
             data.forEach((item) => {
                 html += `
-                <div class="col">
-                    <div class="p-3 card shadow-sm">
-                        <img src="./assets/images/${item.image}" alt="Image ${item.id}" data-id="${item.id}" onclick="handleImageClick(event, ${item.id})"    class="image" >
-                    </div>
-                </div>
-                `;
+                        <div class="col">
+                            <div class="card shadow-sm">
+                                <img src="./assets/images/${item.image}" alt="Image ${item.id}" data-id="${item.id}" onclick="handleImageClick(event, ${item.id})" class="image" >
+                            </div>
+                        </div>
+                    `;
             });
             imageGallery.innerHTML = html;
         }

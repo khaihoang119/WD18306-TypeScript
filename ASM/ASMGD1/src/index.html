@@ -25,9 +25,7 @@
 
         .container {
             margin-top: 20px;
-        }
-
-        
+        } 
 
         .rounded-image {
             border-radius: 100px;
@@ -36,29 +34,26 @@
         .image {
             margin: 5px;
             cursor: pointer;
-        }
-         
-    </style>
+        }       
 
+    </style>
     <div class="container text-center">
         <h1>Xin chào, <span id="playerName"></span>!</h1>
-        <div class="row row-cols-5 row-cols-lg-5 g-2 g-lg-3">
-            <div id="imageGallery">
-
-            </div>
-            <div class="col-6">
-                <form action="./app/module/login/login.component.html">
-                    <input type="submit" value="Hủy" class="btn btn-danger">
-                </form>
-            </div>
-            <div class="col-6">
-                <form action="./index.html">
-                    <input type="submit" value="Reset" class="btn btn-warning">
-                </form>
-               
-            </div>
+        <div class="row row-cols-4 row-cols-lg-5 g-2 g-lg-3" id="imageGallery">
+            
         </div>
-        
+            <div class="row row-cols-3 p-5 d-flex justify-content-center">
+                <div class="col-3">
+                    <form action="./app/module/login/login.component.html">
+                        <input type="submit" value="Hủy" class="btn btn-danger">
+                    </form>
+                </div>
+                <div class="col-3">
+                    <form action="./index.html">
+                        <input type="submit" value="Reset" class="btn btn-warning">
+                    </form>
+                </div>
+            </div> 
     </div>
     
 
