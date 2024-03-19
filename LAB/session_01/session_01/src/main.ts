@@ -50,10 +50,6 @@ if(Person.role === 0){
 }
 console.log(Person.role);
 
-// let userInput: any = 'This is a string';
-// // let strLenght: number = (<string>userInput).length;
-// let strLenght: number = (userInput as string).length
-// console.log(strLenght);
 
 let userInput : unknown;
 let userName: string;

@@ -47,3 +47,21 @@ const salary:{
 }
 const sumary = {...person, ...salary};
 console.log(sumary);
+
+class Deparment{
+    name:string;
+    private email:string = "hoang";
+    readonly phone:string = '123123';
+    constructor(name:string){
+        this.name = name;
+    }
+    getName(){
+        return this.name;
+    }
+    protected getId(){
+        return 123;
+    }
+}
+const n = new Deparment("khai hoang")
+console.log(n.getName());
+

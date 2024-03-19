@@ -47,3 +47,19 @@ var salary = {
 };
 var sumary = __assign(__assign({}, person), salary);
 console.log(sumary);
+var Deparment = /** @class */ (function () {
+    function Deparment(name) {
+        this.email = "hoang";
+        this.phone = '123123';
+        this.name = name;
+    }
+    Deparment.prototype.getName = function () {
+        return this.name;
+    };
+    Deparment.prototype.getId = function () {
+        return 123;
+    };
+    return Deparment;
+}());
+var n = new Deparment("khai hoang");
+console.log(n.getName());
